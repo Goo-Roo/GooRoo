@@ -2,9 +2,7 @@ export class ContentProcessor {
     /**@type{Range}*/
     static range;
 
-    static get content_after_caret() {
-        let content;
-        //активный блок
+    static get range_after_caret(){
         let activeBlock = document.activeElement;
         //позиция каретки в контенте блока
         let startNode = getSelection().anchorNode;
@@ -21,9 +19,24 @@ export class ContentProcessor {
             //установить конец диапазона в конце контента элемента
             range.setEnd(endNode, endOffset);
             //скопировать диапазон в переменную
-            content = range.cloneContents();
+            console.log(this,'range after caret:',range);
+            return range;
         }
-        return content;
+        return undefined;
     }
 
+    static get content_after_caret() {
+        if (this.range_after_caret){
+            return this.range_after_caret.cloneContents();
+        }
+        return undefined;
+    }
+
+    static get range_before_caret(){
+        let range= document.createRange();
+        range.setStart(getSelection().focusNode,0);
+        range.setEnd(getSelection().anchorNode,getSelection().anchorOffset);
+        console.log(this,'range before caret:',range);
+        return range;
+    }
 }
