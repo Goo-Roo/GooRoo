@@ -21,10 +21,6 @@ export class Page extends Goo {
             this.#content);
     }
 
-    connectedCallback() {
-    }
-
-
     static get Content() {
         class Content extends Goo {
             #current_block;
