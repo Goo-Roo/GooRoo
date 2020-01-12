@@ -72,26 +72,30 @@ goo-page-content {
 }
 
 .checked,
-.unchecked{
+.unchecked {
     position: absolute;
-    left:0;
-    top:0;
+    left: 0;
+    top: 0;
     z-index: 1;
 }
-.checked{
+
+.checked {
     opacity: 1;
 }
-.unchecked{
-    opacity:1;
+
+.unchecked {
+    opacity: 1;
 }
-.check-box{
+
+.check-box {
     position: relative;
-   top: 0.1em;
+    top: 0.1em;
 }
 
 goo-page-content {
     padding-bottom: 30vh;
 }
+
 .page-header-control-panel {
     display: flex;
     flex-direction: row;
@@ -124,11 +128,17 @@ goo-block {
 goo-block:hover .block-control-panel {
     opacity: 0.4;
 }
-.block-content{
+
+.block-content {
     word-break: break-word;
     white-space: pre-wrap;
     width: 100%;
 }
+
+.block-content:focus {
+    background-color: rgba(70, 250, 70, 0.08);
+}
+
 goo-button {
     display: flex;
     flex-direction: row;
@@ -163,7 +173,7 @@ goo-button:active {
     color: rgba(50, 50, 50, 0.3);
     letter-spacing: -0.05em;
     word-spacing: -7px;
-    cursor:text;
+    cursor: text;
 }
 
 [contenteditable='true'] {
@@ -183,17 +193,20 @@ goo-button:active {
 .drag-block-button {
     left: -20px;
 }
-.horizontal{
+
+.horizontal {
     display: inline-flex;
     flex-direction: row;
 }
-goo-menu{
+
+goo-menu {
     position: absolute;
     top: 0;
     left: 0;
     visibility: hidden;
 }
-.overlay{
+
+.overlay {
     position: fixed;
     left: 0;
     top: 0;
@@ -202,6 +215,7 @@ goo-menu{
     z-index: 999;
     pointer-events: none;
 }
-goo-page{
+
+goo-page {
 
 }
