@@ -155,6 +155,7 @@ goo-button:active {
     color: rgba(50, 50, 50, 0.2);
     letter-spacing: -0.03em;
     word-spacing: -20px;
+    cursor: text;
 }
 
 .placeholder-soft:focus:empty:before {
@@ -162,6 +163,7 @@ goo-button:active {
     color: rgba(50, 50, 50, 0.3);
     letter-spacing: -0.05em;
     word-spacing: -7px;
+    cursor:text;
 }
 
 [contenteditable='true'] {
@@ -185,7 +187,7 @@ goo-button:active {
     display: inline-flex;
     flex-direction: row;
 }
-implex-menu{
+goo-menu{
     position: absolute;
     top: 0;
     left: 0;
@@ -200,6 +202,6 @@ implex-menu{
     z-index: 999;
     pointer-events: none;
 }
-implex-page{
+goo-page{
 
 }
