@@ -1,0 +1,203 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+goo-app {
+    width: inherit;
+    height: inherit;
+}
+
+goo-side-bar {
+    position: relative;
+    display: flex;
+    width: 200px;
+    height: 100%;
+    background: rgba(50, 50, 50, 0.1);
+}
+
+.resizer {
+    position: absolute;
+    top: 0;
+    right: -5px;
+    height: 100%;
+    width: 10px;
+    opacity: 0;
+    cursor: url("../resources/resizer-cursor.png") 10 8, default;
+    border: black thin solid;
+}
+
+goo-main-frame {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 200px);
+    height: 100%;
+}
+
+.splitter {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+goo-top-bar {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+}
+
+implex-page-scroller {
+    height: 100%;
+    width: 100%;
+}
+
+.vertical {
+    overflow: paged-y;
+}
+
+goo-page-header,
+goo-page-content {
+    width: calc(100% - 160px);
+    display: flex;
+    flex-direction: column;
+    padding: 8px 80px 0;
+}
+
+.checked,
+.unchecked{
+    position: absolute;
+    left:0;
+    top:0;
+    z-index: 1;
+}
+.checked{
+    opacity: 1;
+}
+.unchecked{
+    opacity:1;
+}
+.check-box{
+    position: relative;
+   top: 0.1em;
+}
+
+goo-page-content {
+    padding-bottom: 30vh;
+}
+.page-header-control-panel {
+    display: flex;
+    flex-direction: row;
+    opacity: 0;
+    transition: opacity 150ms ease-in 0s;
+}
+
+goo-page-header:hover .page-header-control-panel {
+    opacity: 0.5;
+}
+
+.page-title {
+    font-weight: 900;
+    font-size: 2.5em;
+    cursor: text;
+}
+
+implex-block-control-panel {
+    position: relative;
+    opacity: 0;
+    transition: opacity 150ms ease-in 0s;
+}
+
+implex-content-block {
+    width: 100%;
+    word-break: break-word;
+    white-space: nowrap;
+}
+implex-content-block{
+
+}
+implex-content-block:hover implex-block-control-panel {
+    opacity: 0.4;
+}
+
+goo-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 2px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.8em;
+    word-spacing: -5px;
+    letter-spacing: -0.04em;
+    transition: background-color 80ms ease-in 0s;
+}
+
+goo-button:hover {
+    background: rgba(50, 50, 50, 0.2);
+}
+
+goo-button:active {
+    background: rgba(50, 50, 50, 0.4);
+}
+
+.placeholder-hard:empty:before {
+    content: attr(placeholder);
+    color: rgba(50, 50, 50, 0.2);
+    letter-spacing: -0.03em;
+    word-spacing: -20px;
+}
+
+.placeholder-soft:focus:empty:before {
+    content: attr(placeholder);
+    color: rgba(50, 50, 50, 0.3);
+    letter-spacing: -0.05em;
+    word-spacing: -7px;
+}
+
+[contenteditable='true'] {
+    outline: none;
+}
+
+.add-block-button,
+.drag-block-button {
+    position: absolute;
+    top: 0.1em;
+}
+
+.add-block-button {
+    left: -40px;
+}
+
+.drag-block-button {
+    left: -20px;
+}
+.horizontal{
+    display: inline-flex;
+    flex-direction: row;
+}
+implex-menu{
+    position: absolute;
+    top: 0;
+    left: 0;
+    visibility: hidden;
+}
+.overlay{
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    pointer-events: none;
+}
+implex-page{
+
+}
