@@ -1,64 +1,133 @@
 import {Goo} from "./Goo.js";
+import {Button} from "./Buttons.js";
 
-export class Menu extends Goo{
-    menu_items=[];
-
+export class Menu extends Goo {
+    menu_items = [];
+    #position = {left: 0, top: 0};
     constructor(builder) {
         super();
         this.classList.add(builder.name);
-        this.menu_items=builder.menu_items;
+        this.menu_items = builder.menu_items;
         for (let menuItem of this.menu_items) {
             this.append(menuItem)
         }
-        if (builder.pSize){
-            this.style.width=builder.pSize.width;
-            this.style.height=builder.pSize.height;
+        if (builder.pSize) {
+            this.style.width = builder.pSize.width;
+            this.style.height = builder.pSize.height;
         }
+        this.#position = builder.position;
 
     }
-    static get Builder(){
-        class Builder{
+    get position() {
+        return this.#position;
+    }
 
+    static get Builder() {
+        class Builder {
+            position = {left: 0, top: 0};
             // noinspection JSMismatchedCollectionQueryUpdate
-            menu_items=[];
-            constructor(name){
-                this.name=name;
+            menu_items = [];
+
+            constructor(name) {
+                this.name = name;
             }
+
             size(width, height) {
                 this.pSize = {
-                    width: width+'px',
-                    height: height+'px'
+                    width: width + 'px',
+                    height: height + 'px'
                 };
                 return this;
             }
-            add_item(button,command){
-                button.addEventListener('click',command);
+
+            add_item(button, command) {
+                button.addEventListener('click', command);
                 this.menu_items.push(button);
                 return this;
             }
-            build(){
+            relative_position(left, top) {
+                this.position.left = left;
+                this.position.top = top;
+                return this;
+            }
+
+            build() {
                 return new Menu(this);
             }
         }
+
         return Builder;
     }
-    show(){
-        show(this);
+
+    show(event) {
+        let menu = this;
+        menu.style.left = menu.position.left + event.pageX + 'px';
+        menu.style.top = menu.position.top + event.pageY + 'px';
+        menu.style.visibility = 'visible';
+        overlay.style.pointerEvents = 'auto';
+        overlay.addEventListener('click', hide);
+
+        function hide() {
+            menu.style.visibility = 'hidden';
+            overlay.style.pointerEvents = 'none';
+            overlay.removeEventListener('click', hide);
+        }
     }
-    hide(){
-        hide(this);
-    }
-}
-const overlay=document.getElementsByClassName('goo-app')[0];
-function show(self) {
-    window.addEventListener('click',hide);
-    self.style.visibility='visible';
-    overlay.style.pointerEvents='auto';
 }
 
-function hide(self){
-    self.style.visibility='hidden';
-    overlay.style.pointerEvents='none';
-    window.removeEventListener('click',hide);
-}
-customElements.define('goo-menu',Menu);
+const overlay = document.getElementsByClassName('goo-app')[0];
+
+customElements.define('goo-menu', Menu);
+/*----------------------------------------/ICONS FOR MENU ITEMS/------------------------------------------------------*/
+const UNDERLINE_ICON =
+    "../resources/underline.svg#underline";
+const ITALIC_ICON =
+    "../resources/italic.svg#italic";
+const STRIKE_ICON =
+    "../resources/strike.svg#strike";
+const BOLD_ICON =
+    "../resources/bold.svg#bold";
+
+/*---------------------------------------/ITEMS FOR FORMAT MENU/------------------------------------------------------*/
+const UNDERLINE_ITEM =
+    new Button.Builder('underline')
+        .size(20, 20)
+        .icon(UNDERLINE_ICON, 16)
+        .build();
+const ITALIC_ITEM =
+    new Button.Builder('italic')
+        .size(20, 20)
+        .icon(ITALIC_ICON, 16)
+        .build();
+const STRIKE_ITEM =
+    new Button.Builder('strike')
+        .size(20, 20)
+        .icon(STRIKE_ICON, 16)
+        .build();
+const BOLD_ITEM =
+    new Button.Builder('bold')
+        .size(20, 20)
+        .icon(BOLD_ICON, 16)
+        .build();
+/*--------------------------------------------/FORMAT MENU/-----------------------------------------------------------*/
+export const FORMAT_MENU =
+    new Menu
+        .Builder('horizontal')
+        .add_item(
+            UNDERLINE_ITEM, function () {
+                //todo---------------------------------------
+            })
+        .add_item(
+            ITALIC_ITEM, function () {
+                //todo------------------------------------------
+            })
+        .add_item(
+            STRIKE_ITEM, function () {
+                //todo------------------------------------------
+            })
+        .add_item(
+            BOLD_ITEM, function () {
+                //todo--------------------------------------------
+            })
+        .relative_position(-40, -40)
+        .build();
