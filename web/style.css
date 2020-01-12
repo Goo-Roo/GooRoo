@@ -54,7 +54,7 @@ goo-top-bar {
     flex-direction: row;
 }
 
-implex-page-scroller {
+.page-scroller {
     height: 100%;
     width: 100%;
 }
@@ -109,24 +109,26 @@ goo-page-header:hover .page-header-control-panel {
     cursor: text;
 }
 
-implex-block-control-panel {
+.block-control-panel {
     position: relative;
     opacity: 0;
     transition: opacity 150ms ease-in 0s;
 }
 
-implex-content-block {
+goo-block {
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    word-break: break-word;
-    white-space: nowrap;
 }
-implex-content-block{
 
-}
-implex-content-block:hover implex-block-control-panel {
+goo-block:hover .block-control-panel {
     opacity: 0.4;
 }
-
+.block-content{
+    word-break: break-word;
+    white-space: pre-wrap;
+    width: 100%;
+}
 goo-button {
     display: flex;
     flex-direction: row;
