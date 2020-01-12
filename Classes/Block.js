@@ -20,6 +20,9 @@ export class Block extends Goo {
         this.#content.classList.add('placeholder-soft');
         this.#content.setAttribute('placeholder', "наберите '?' для команд");
         this.#content.contentEditable = 'true';
+        this.#content.addEventListener('click',function (event) {
+                event.stopPropagation();
+        });
         this.#add_block_button =
             new Button.Builder('add-block-button'/*класс*/)
                 .icon(CROSS_ICON, 16/*шир и выс*/)
