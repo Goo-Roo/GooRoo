@@ -19,6 +19,7 @@ export class App extends Goo {
         this.#side_bar.make_resizable();
         this.append(splitter, this.#overlay);
     }
+
 }
 
 customElements.define('goo-app', App);
