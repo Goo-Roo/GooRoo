@@ -5,7 +5,6 @@ export class Button extends Goo {
     constructor(builder) {
         super();
         this.className=builder.name;
-        this.classList.add('button');
         if (builder.pIcon) {
             this.append(builder.pIcon)
         }

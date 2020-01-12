@@ -3,10 +3,9 @@ import {Header} from "./Header.js";
 
 
 
-class Content extends Goo {
-}
 
-customElements.define('goo-page-content', Content);
+
+
 
 export class Page extends Goo {
     #cover;
@@ -18,11 +17,19 @@ export class Page extends Goo {
         this.#cover = new Goo();
         this.#cover.className = 'page-cover';
         this.#header = new Header();
-        this.#content = new Content();
+        this.#content = new Page.Content;
         this.append(
             this.#cover,
             this.#header,
             this.#content);
+    }
+
+    static get Content(){
+        class Content extends Goo {
+
+        }
+        customElements.define('goo-page-content', Content);
+        return Content;
     }
 }
 
