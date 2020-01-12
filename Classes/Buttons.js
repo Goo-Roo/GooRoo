@@ -74,10 +74,6 @@ const COVER_ICON=
     "../resources/cover.svg#cover";
 const DISCUSSION_ICON=
     "../resources/discussion.svg#discussion";
-const CROSS_ICON=
-    '../resources/cross.svg#cross';
-const DRAG_ICON=
-    '../resources/drag.svg#drag';
 
 
 /*-----------------------------------------/BUTTONS FOR PAGE CONTROL PANEL/-------------------------------------------*/
@@ -99,15 +95,3 @@ export const ADD_DISCUSSION_BUTTON =
         .icon(DISCUSSION_ICON, 16)
         .build();
 
-/*---------------------------------------------/BUTTONS FOR BLOCK CONTROL PANEL/--------------------------------------*/
-export const ADD_BLOCK_BUTTON =
-    new Button.Builder('add-block-button'/*класс*/)
-    .icon(CROSS_ICON, 16/*шир и выс*/)
-    .size(16/*ширина*/, 16/*высота*/)
-    .build();
-
-export const DRAG_BLOCK_BUTTON =
-    new Button.Builder('drag-block-button'/*класс*/)
-        .icon(DRAG_ICON, 16/*шир и выс*/)
-        .size(16/*ширина*/, 16/*высота*/)
-        .build();

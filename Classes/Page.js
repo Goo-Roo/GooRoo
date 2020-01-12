@@ -1,38 +1,6 @@
 import {Goo} from "./Goo.js";
 import {Header} from "./Header.js";
-import {
-    ADD_BLOCK_BUTTON,
-    DRAG_BLOCK_BUTTON
-} from "./Buttons.js";
-
-
-class Block extends Goo {
-    #host;
-    #content;
-
-    constructor(host) {
-        super();
-        this.#content = new Goo();
-        this.#content.className = 'block-content';
-        this.#content.classList.add('placeholder-soft');
-        this.#content.setAttribute('placeholder', "наберите '?' для команд");
-        this.#content.contentEditable = 'true';
-        let control_panel = new Goo();
-        control_panel.className='block-control-panel';
-        control_panel
-            .append(
-                ADD_BLOCK_BUTTON,
-                DRAG_BLOCK_BUTTON);
-        this.append(
-            control_panel,
-            this.#content);
-        this.#host = host;
-    }
-
-    focus() {
-        this.#content.focus();
-    }
-}
+import {Block} from "./Block.js";
 
 customElements.define('goo-block', Block);
 
