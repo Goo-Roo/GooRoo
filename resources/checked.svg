@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+    <g id="checked">
+        <path d="M18,18H2V2H18ZM16,4H4V16H16Z"/>
+        <polygon points="0 8 10 20 20 0 20 0 9 13 0 8 0 8"/>
+    </g>
+</svg>
