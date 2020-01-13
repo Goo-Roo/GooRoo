@@ -7,6 +7,34 @@ const CROSS_ICON =
 const DRAG_ICON =
     '../resources/drag.svg#drag';
 
+
+class BlockContent extends Goo {
+    #host;
+
+    constructor(host) {
+        super();
+        const self = this;
+        self.#host=host;
+        self.classList.add('placeholder-soft');
+        self.setAttribute('placeholder', "наберите '?' для команд");
+        self.contentEditable = 'true';
+        self.addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+        self.addEventListener('keydown', function (event) {
+            host.register_me();
+            host.keyDown(event);
+        });
+        self.addEventListener('mouseup', host.check_selection);
+    }
+
+    get host(){
+        return this.#host;
+    }
+}
+
+customElements.define('goo-block-content', BlockContent);
+
 export class Block extends Goo {
     /**@type{Content}*/
     #host;
@@ -23,19 +51,7 @@ export class Block extends Goo {
         /**@type{Block}*/
         const self = this;
         self.host = host;
-        self.#content = new Goo();
-        self.content.className = 'block-content';
-        self.content.classList.add('placeholder-soft');
-        self.content.setAttribute('placeholder', "наберите '?' для команд");
-        self.content.contentEditable = 'true';
-        self.content.addEventListener('click', function (event) {
-            event.stopPropagation();
-        });
-        self.content.addEventListener('keydown', function (event) {
-            self.host.current_block = self;
-            self.keyDown(event);
-        });
-        self.content.addEventListener('mouseup', this.check_selection);
+        self.#content = new BlockContent(self);
         self.add_block_button =
             new Button.Builder('add-block-button'/*класс*/)
                 .icon(CROSS_ICON, 16/*шир и выс*/)
@@ -107,10 +123,13 @@ export class Block extends Goo {
             format_menu.show(event);
         }
     }
-
-    get is_alone(){
+    register_me(){
+        this.host.current_block=this;
+    }
+    get is_alone() {
         return this.host.blocks.length < 2;
     }
+
     //обработать нажатие клавиши в поле блока
     /**
      * @param{KeyboardEvent}event
