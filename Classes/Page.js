@@ -9,6 +9,7 @@ export class Page extends Goo {
     #cover;
     #header;
     #content;
+
     constructor() {
         super();
         this.#cover = new Goo();
@@ -31,7 +32,7 @@ export class Page extends Goo {
                 this.append(new Block(this));
                 let self = this;
                 this.addEventListener('click', function () {
-                    self.last_block.focus();
+                        self.last_block.focus();
                 });
             }
 
@@ -44,16 +45,25 @@ export class Page extends Goo {
                 return this.#current_block;
             }
 
+            set current_block(block) {
+                this.#current_block = block;
+            }
+
             /**@return {Block|Element}*/
             get last_block() {
                 return this.lastElementChild;
             }
 
-            new_block() {
+            new_block(content) {
                 let block = new Block(this);
-                this.append(block);
-                this.#current_block=block;
-                block.focus();
+                block.content.append(content);
+                if (!this.current_block.is_last) {
+                    this.insertBefore(block, this.#current_block.nextElementSibling);
+                } else {
+                    this.append(block);
+                }
+                this.current_block = block;
+                this.current_block.focus();
             }
         }
 
