@@ -92,7 +92,7 @@ export class Block extends Goo {
 
     /**@return {boolean}*/
     get is_last() {
-        return this === this.#host.last_block;
+        return this === this.host.last_block;
     }
 
     /**@type{VoidFunction}
