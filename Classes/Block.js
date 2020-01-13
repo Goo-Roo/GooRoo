@@ -1,6 +1,7 @@
 import {Goo} from "./Goo.js";
 import {Button} from "./Buttons.js";
 import {app} from "../scripts/main.js";
+import {ContentProcessor} from "./ContentProcessor.js";
 
 const CROSS_ICON =
     '../resources/cross.svg#cross';
@@ -19,6 +20,7 @@ class BlockContent extends Goo {
         self.setAttribute('placeholder', "наберите '?' для команд");
         self.contentEditable = 'true';
         self.addEventListener('click', function (event) {
+            ContentProcessor.content_after_caret;
             event.stopPropagation();
         });
         self.addEventListener('keydown', function (event) {
@@ -179,7 +181,8 @@ export class Block extends Goo {
             //установить диапазон равным контенту предыдущего блока
             previousBlockRange.selectNodeContents(previousBlockContent);
             //добавить к контенту предыдущего блока контент текущего блока
-            previousBlockContent.append(currentBlockRange.cloneContents());
+            previousBlockContent
+                .append(ContentProcessor.content_after_caret().cloneContents());
             //удалить текущий блок
             self.remove();
             //установить курсор перед добавленным контентом
