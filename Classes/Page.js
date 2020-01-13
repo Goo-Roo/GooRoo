@@ -2,13 +2,13 @@ import {Goo} from "./Goo.js";
 import {Header} from "./Header.js";
 import {Block} from "./Block.js";
 
+
 customElements.define('goo-block', Block);
 
 export class Page extends Goo {
     #cover;
     #header;
     #content;
-
     constructor() {
         super();
         this.#cover = new Goo();
@@ -27,8 +27,8 @@ export class Page extends Goo {
 
             constructor() {
                 super();
-                this.#current_block = new Block(this);
-                this.append(this.#current_block);
+
+                this.append(new Block(this));
                 let self = this;
                 this.addEventListener('click', function () {
                     self.last_block.focus();
@@ -40,20 +40,29 @@ export class Page extends Goo {
                 return this.getElementsByTagName('goo-block');
             }
 
-            new_block() {
-                let block = new Block(this);
-                this.append(block);
-                block.focus();
+            get current_block() {
+                return this.#current_block;
             }
 
             /**@return {Block|Element}*/
             get last_block() {
                 return this.lastElementChild;
             }
+
+            new_block() {
+                let block = new Block(this);
+                this.append(block);
+                this.#current_block=block;
+                block.focus();
+            }
         }
 
         customElements.define('goo-page-content', Content);
         return Content;
+    }
+
+    get content() {
+        return this.#content;
     }
 }
 

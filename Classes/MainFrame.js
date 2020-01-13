@@ -15,12 +15,12 @@ export class MainFrame extends Goo {
         this.append(this.#top_bar, this.#page);
     }
 
-    set page(page) {
-        this.#page = page;
-    }
-
     get page() {
         return this.#page;
+    }
+
+    set page(page) {
+        this.#page = page;
     }
 
     new_page() {

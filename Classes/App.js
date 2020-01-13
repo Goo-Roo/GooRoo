@@ -1,13 +1,20 @@
 import {Goo} from "./Goo.js";
 import {MainFrame} from "./MainFrame.js";
 import {SideBar} from "./SideBar.js";
+import {FORMAT_MENU} from "./Menus.js";
+import {CONTENT_MENU} from "./Menus.js";
 
 export class App extends Goo {
     #overlay = new Goo();
     #side_bar;
     #main_frame;
+    #range;
     constructor() {
         super();
+        this.#overlay
+            .append(
+                FORMAT_MENU,
+                CONTENT_MENU);
         this.#overlay.className = 'overlay';
         this.#side_bar = new SideBar();
         this.#main_frame = new MainFrame();
@@ -20,6 +27,13 @@ export class App extends Goo {
         this.append(splitter, this.#overlay);
     }
 
+    get range(){
+        return this.#range;
+    }
+
+    set range(range){
+        this.#range=range;
+    }
 }
 
 customElements.define('goo-app', App);
