@@ -1,7 +1,7 @@
 import {Goo} from "./Goo.js";
 import {Button} from "./Buttons.js";
 import {app} from "../scripts/main.js";
-import {ContentProcessor} from "./ContentProcessor.js";
+import {ContentManager} from "./ContentManager.js";
 
 const CROSS_ICON =
     '../resources/cross.svg#cross';
@@ -172,10 +172,10 @@ export class Block extends Goo {
             //     /*установить конец диапазона в конце контента элемента*/
             //     range.setEnd(endNode, endOffset);
             //     /*скопировать полученный диапазон в переменную*/
-            content = ContentProcessor.content_after_caret;//range.cloneContents();
+            content = ContentManager.content_after_caret;//range.cloneContents();
             /*удалить полученный диапазон из текущего элемента*/
-            if (ContentProcessor.range_after_caret) {
-                ContentProcessor.range_after_caret.deleteContents();
+            if (ContentManager.range_after_caret) {
+                ContentManager.range_after_caret.deleteContents();
             }
             //}
             /*добавить новый блок с скопированным контентом*/
@@ -183,22 +183,18 @@ export class Block extends Goo {
         }
 
         function backspace() {
-            let previousBlockContent = self.previous.content;
-            // /**@type {Range} диапазон для текущего блока*/
-            // let currentBlockRange = document.createRange();
-            // //установить диапазон равным контенту текущего блока
-            // currentBlockRange.selectNodeContents(self.content);
-            /**@type {Range} диапазон для предыдущего блока*/
-            let previousBlockRange = document.createRange();
-            //установить диапазон равным контенту предыдущего блока
-            previousBlockRange.selectNodeContents(previousBlockContent);
-            //добавить к контенту предыдущего блока контент текущего блока
-            previousBlockContent
-                .append(ContentProcessor.content_after_caret);
-            //удалить текущий блок
+            ContentManager.save_to_range('previous content', self.previous.content);
+            /*добавить к контенту предыдущего блока контент текущего блока*/
+            if (ContentManager.content_after_caret) {
+                self.previous.content.append(ContentManager.content_after_caret);
+            }
+            /*удалить текущий блок*/
             self.remove();
-            //установить курсор перед добавленным контентом
-            getSelection().setPosition(previousBlockRange.endContainer, previousBlockRange.endOffset);
+            /**@type {Range}*//*диапазон для предыдущего блока*/
+            let previousBlockRange = ContentManager.get_range('previous content');
+            /*установить курсор перед добавленным в предыдущий блок контентом*/
+            getSelection().setPosition(
+                previousBlockRange.endContainer, previousBlockRange.endOffset);
         }
 
         switch (event.code) {
@@ -209,14 +205,13 @@ export class Block extends Goo {
                 break;
             case "Backspace":
                 /**@type {Range}*/
-                //let range = document.createRange();
+                let range = document.createRange();
                 /**@type{Selection}*/
                 //  let selection = getSelection();
                 // range.setStart(selection.anchorNode, 0);
                 // range.setEnd(selection.focusNode, selection.focusOffset);
-                ContentProcessor.range_before_caret;
-                ContentProcessor.range_after_caret;
-                if (ContentProcessor.range_before_caret.collapsed) {
+                range.selectNode(self.content);
+                if (!ContentManager.range_before_caret.toString().length) {
                     if (!self.is_alone) {
                         backspace();
                         event.preventDefault();
