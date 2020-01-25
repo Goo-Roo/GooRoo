@@ -1,11 +1,28 @@
 import {Goo} from "./Goo.js";
 import {Button} from "./Buttons.js";
 import {app} from "../scripts/main.js";
+import {ContentProcessor} from "./ContentProcessor.js";
 
 const CROSS_ICON =
     '../resources/cross.svg#cross';
 const DRAG_ICON =
     '../resources/drag.svg#drag';
+
+function new_add_block_button() {
+    return new Button
+        .Builder('add-block-button'/*класс*/)
+        .icon(CROSS_ICON, 16/*шир и выс*/)
+        .size(16/*ширина*/, 16/*высота*/)
+        .build();
+}
+
+function new_drag_block_button() {
+    return new Button
+        .Builder('drag-block-button'/*класс*/)
+        .icon(DRAG_ICON, 16/*шир и выс*/)
+        .size(16/*ширина*/, 16/*высота*/)
+        .build();
+}
 
 
 class BlockContent extends Goo {
@@ -14,7 +31,7 @@ class BlockContent extends Goo {
     constructor(host) {
         super();
         const self = this;
-        self.#host=host;
+        self.#host = host;
         self.classList.add('placeholder-soft');
         self.setAttribute('placeholder', "наберите '?' для команд");
         self.contentEditable = 'true';
@@ -28,7 +45,7 @@ class BlockContent extends Goo {
         self.addEventListener('mouseup', host.check_selection);
     }
 
-    get host(){
+    get host() {
         return this.#host;
     }
 }
@@ -52,30 +69,23 @@ export class Block extends Goo {
         const self = this;
         self.host = host;
         self.#content = new BlockContent(self);
-        self.add_block_button =
-            new Button.Builder('add-block-button'/*класс*/)
-                .icon(CROSS_ICON, 16/*шир и выс*/)
-                .size(16/*ширина*/, 16/*высота*/)
-                .build();
-        self.drag_block_button =
-            new Button.Builder('drag-block-button'/*класс*/)
-                .icon(DRAG_ICON, 16/*шир и выс*/)
-                .size(16/*ширина*/, 16/*высота*/)
-                .build();
-        self.add_block_button.addEventListener('click', function (event) {
-            event.stopPropagation();
-            self.host.current_block = self;
-            self.host.new_block();
-        });
-        self.drag_block_button.addEventListener('click', function (event) {
-            document.getElementById('content-menu').show(event);
-        });
+        self.add_block_button = new_add_block_button();
+        self.drag_block_button = new_drag_block_button();
+        self.add_block_button.addEventListener('click',
+            function (event) {
+                event.stopPropagation();
+                self.host.current_block = self;
+                self.host.new_block();
+            });
+        self.drag_block_button.addEventListener('click',
+            function (event) {
+                document.getElementById('content-menu').show(event);
+            });
         let control_panel = new Goo();
         control_panel.className = 'block-control-panel';
-        control_panel
-            .append(
-                self.add_block_button,
-                self.drag_block_button);
+        control_panel.append(
+            self.add_block_button,
+            self.drag_block_button);
         self.append(
             control_panel,
             self.content);
@@ -123,9 +133,11 @@ export class Block extends Goo {
             format_menu.show(event);
         }
     }
-    register_me(){
-        this.host.current_block=this;
+
+    register_me() {
+        this.host.current_block = this;
     }
+
     get is_alone() {
         return this.host.blocks.length < 2;
     }
@@ -143,43 +155,46 @@ export class Block extends Goo {
         function enter() {
             /**@type{DocumentFragment}*/
             let content;
-            /*позиция каретки в контенте блока*/
-            /**@type {Node}*/
-            let startNode = getSelection().anchorNode;
-            /**@type {number}*/
-            let startOffset = getSelection().anchorOffset;
-            /*конец контента в блоке*/
-            let endNode = self.content.lastChild;
-            /*если после каретки в блоке есть контент*/
-            if (endNode) {
-                let endOffset = endNode.textContent.length;
-                /*создать диапазон*/
-                let range = document.createRange();
-                /*установить начало диапазона в позиции курсора*/
-                range.setStart(startNode, startOffset);
-                /*установить конец диапазона в конце контента элемента*/
-                range.setEnd(endNode, endOffset);
-                /*скопировать полученный диапазон в переменную*/
-                content = range.cloneContents();
-                /*удалить полученный диапазон из текущего элемента*/
-                range.deleteContents();
+            //  /*позиция каретки в контенте блока*/
+            //  /**@type {Node}*/
+            //  let startNode = getSelection().anchorNode;
+            //  /**@type {number}*/
+            //  let startOffset = getSelection().anchorOffset;
+            //  /*конец контента в блоке*/
+            //  let endNode = self.content.lastChild;
+            //  /*если после каретки в блоке есть контент*/
+            //  if (endNode) {
+            //      let endOffset = endNode.textContent.length;
+            //      /*создать диапазон*/
+            //      let range = document.createRange();
+            //      /*установить начало диапазона в позиции курсора*/
+            //     range.setStart(startNode, startOffset);
+            //     /*установить конец диапазона в конце контента элемента*/
+            //     range.setEnd(endNode, endOffset);
+            //     /*скопировать полученный диапазон в переменную*/
+            content = ContentProcessor.content_after_caret;//range.cloneContents();
+            /*удалить полученный диапазон из текущего элемента*/
+            if (ContentProcessor.range_after_caret) {
+                ContentProcessor.range_after_caret.deleteContents();
             }
+            //}
             /*добавить новый блок с скопированным контентом*/
             self.host.new_block(content);
         }
 
         function backspace() {
             let previousBlockContent = self.previous.content;
-            /**@type {Range} диапазон для текущего блока*/
-            let currentBlockRange = document.createRange();
-            //установить диапазон равным контенту текущего блока
-            currentBlockRange.selectNodeContents(self.content);
+            // /**@type {Range} диапазон для текущего блока*/
+            // let currentBlockRange = document.createRange();
+            // //установить диапазон равным контенту текущего блока
+            // currentBlockRange.selectNodeContents(self.content);
             /**@type {Range} диапазон для предыдущего блока*/
             let previousBlockRange = document.createRange();
             //установить диапазон равным контенту предыдущего блока
             previousBlockRange.selectNodeContents(previousBlockContent);
             //добавить к контенту предыдущего блока контент текущего блока
-            previousBlockContent.append(currentBlockRange.cloneContents());
+            previousBlockContent
+                .append(ContentProcessor.content_after_caret);
             //удалить текущий блок
             self.remove();
             //установить курсор перед добавленным контентом
@@ -194,12 +209,14 @@ export class Block extends Goo {
                 break;
             case "Backspace":
                 /**@type {Range}*/
-                let range = document.createRange();
+                //let range = document.createRange();
                 /**@type{Selection}*/
-                let selection = getSelection();
-                range.setStart(selection.anchorNode, 0);
-                range.setEnd(selection.focusNode, selection.focusOffset);
-                if (range.collapsed) {
+                //  let selection = getSelection();
+                // range.setStart(selection.anchorNode, 0);
+                // range.setEnd(selection.focusNode, selection.focusOffset);
+                ContentProcessor.range_before_caret;
+                ContentProcessor.range_after_caret;
+                if (ContentProcessor.range_before_caret.collapsed) {
                     if (!self.is_alone) {
                         backspace();
                         event.preventDefault();
