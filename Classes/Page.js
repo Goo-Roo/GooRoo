@@ -32,7 +32,7 @@ export class Page extends Goo {
                 this.append(new Block(this));
                 let self = this;
                 this.addEventListener('click', function () {
-                        self.last_block.focus();
+                    self.last_block.focus();
                 });
             }
 
@@ -56,7 +56,9 @@ export class Page extends Goo {
 
             new_block(content) {
                 let block = new Block(this);
-                block.content.append(content);
+                if (content) {
+                    block.content.append(content);
+                }
                 if (!this.current_block.is_last) {
                     this.insertBefore(block, this.#current_block.nextElementSibling);
                 } else {
