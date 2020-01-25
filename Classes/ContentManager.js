@@ -4,8 +4,22 @@
 export class ContentManager {
     /**@type{Range}*/
     static range;
+    static ranges = new Map();
 
-    static get range_after_caret(){
+    static save_to_range(key, node) {
+        this.range = document.createRange();
+        this.range.selectNodeContents(node);
+        this.ranges.set(key,this.range);
+        this.range.detach();
+    }
+    static get_range(key){
+        this.range=this.ranges.get(key);
+        this.ranges.delete(key);
+        return this.range;
+    }
+
+
+    static get range_after_caret() {
         //создать диапазон
         let range = document.createRange();
         let activeBlock = document.activeElement;
@@ -29,10 +43,10 @@ export class ContentManager {
         return this.range_after_caret.cloneContents();
     }
 
-    static get range_before_caret(){
-        let range= document.createRange();
-        range.setStart(getSelection().focusNode,0);
-        range.setEnd(getSelection().anchorNode,getSelection().anchorOffset);
+    static get range_before_caret() {
+        let range = document.createRange();
+        range.setStart(getSelection().focusNode, 0);
+        range.setEnd(getSelection().anchorNode, getSelection().anchorOffset);
         return range;
     }
 }

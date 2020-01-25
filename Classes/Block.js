@@ -183,18 +183,18 @@ export class Block extends Goo {
         }
 
         function backspace() {
-            /**@type {Range}*//*диапазон для предыдущего блока*/
-            let previousBlockRange = document.createRange();
-            /*установить диапазон равным контенту предыдущего блока*/
-            previousBlockRange.selectNodeContents(self.previous.content);
+            ContentManager.save_to_range('previous content', self.previous.content);
             /*добавить к контенту предыдущего блока контент текущего блока*/
             if (ContentManager.content_after_caret) {
                 self.previous.content.append(ContentManager.content_after_caret);
             }
             /*удалить текущий блок*/
             self.remove();
+            /**@type {Range}*//*диапазон для предыдущего блока*/
+            let previousBlockRange = ContentManager.get_range('previous content');
             /*установить курсор перед добавленным в предыдущий блок контентом*/
-            getSelection().setPosition(previousBlockRange.endContainer, previousBlockRange.endOffset);
+            getSelection().setPosition(
+                previousBlockRange.endContainer, previousBlockRange.endOffset);
         }
 
         switch (event.code) {
