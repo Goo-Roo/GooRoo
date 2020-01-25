@@ -129,15 +129,15 @@ goo-block:hover .block-control-panel {
     opacity: 0.4;
 }
 
-.block-content {
+goo-block-content {
     word-break: break-word;
     white-space: pre-wrap;
     width: 100%;
     transition: background-color 100ms ease-out 0s;
 }
 
-.block-content:focus {
-    background-color: rgba(70, 250, 70, 0.08);
+goo-block-content:focus {
+    background-color: rgba(70, 250, 70, 0.1);
 }
 
 goo-button {
