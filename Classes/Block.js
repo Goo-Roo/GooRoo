@@ -79,7 +79,10 @@ export class Block extends Goo {
             });
         self.drag_block_button.addEventListener('click',
             function (event) {
-                document.getElementById('content-menu').show(event);
+                document
+                    .getElementById('content-menu')
+                    .set_invoker(self)
+                    .show(event);
             });
         let control_panel = new Goo();
         control_panel.className = 'block-control-panel';
@@ -90,7 +93,9 @@ export class Block extends Goo {
             control_panel,
             self.content);
     }
-
+    clear(){
+        ContentManager.clear_content(this);
+    }
     /**@return {Content}*/
     get host() {
         return this.#host;

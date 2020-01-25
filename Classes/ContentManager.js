@@ -18,6 +18,16 @@ export class ContentManager {
         return this.range;
     }
 
+    /**
+     * Удаляет содержимое блока
+     * @param {Block}block
+     */
+    static clear_content(block){
+        let range=document.createRange();
+        range.selectNodeContents(block.content);
+        range.deleteContents();
+    }
+
 
     static get range_after_caret() {
         //создать диапазон

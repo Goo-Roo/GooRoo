@@ -2,11 +2,14 @@ import {Goo} from "./Goo.js";
 import {Button} from "./Buttons.js";
 import {execCommand} from "./functions.js";
 import {app} from "../scripts/main.js";
+import {remove_block} from "./functions.js";
 
 
 export class Menu extends Goo {
     menu_items = [];
     #position = {left: 0, top: 0};
+    /**@type{Block}*/
+    #invoker;
 
     constructor(builder) {
         super();
@@ -71,6 +74,18 @@ export class Menu extends Goo {
         return this.#position;
     }
 
+    /**@return {Block}*/
+    get invoker(){
+        return this.#invoker;
+    }
+
+    /**@param {Block}invoker
+     * @return {Menu}*/
+    set_invoker(invoker) {
+        this.#invoker = invoker;
+        return this;
+    }
+
     show(event) {
         let overlay = document.getElementsByClassName('overlay').item(0);
         let menu = this;
@@ -87,7 +102,6 @@ export class Menu extends Goo {
         }
     }
 }
-
 
 customElements.define('goo-menu', Menu);
 /*----------------------------------------/ICONS FOR MENU ITEMS/------------------------------------------------------*/
@@ -130,26 +144,26 @@ export const FORMAT_MENU =
         .setID('format-menu')
         .add_item(
             UNDERLINE_ITEM, function () {
-                execCommand(app.range,'underline')
+                execCommand(app.range, 'underline')
             })
         .add_item(
             ITALIC_ITEM, function () {
-                execCommand(app.range,'italic')
+                execCommand(app.range, 'italic')
             })
         .add_item(
             STRIKE_ITEM, function () {
-                execCommand(app.range,'strikethrough')
+                execCommand(app.range, 'strikethrough')
             })
         .add_item(
             BOLD_ITEM, function () {
-                execCommand(app.range,'bold')
+                execCommand(app.range, 'bold')
             })
         .relative_position(-40, -40)
         .build();
 
 
 /*-----------/BUTTONS FOR CONTENT MENU/-------------------*/
-const delete_button =
+const DELETE_BUTTON =
     new Button.Builder('delete')
         .size(100, 25)
         .icon(TRASH_ICON, 16)
@@ -163,7 +177,8 @@ export const CONTENT_MENU =
         .setID('content-menu')
         .relative_position(-110, -10)
         .add_item(
-            delete_button,
-            function () {//todo-----------------------------------
+            DELETE_BUTTON,
+            function () {
+                remove_block(CONTENT_MENU.invoker);
             })
         .build();
