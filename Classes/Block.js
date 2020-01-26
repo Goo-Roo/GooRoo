@@ -92,6 +92,7 @@ export class Block extends Goo {
         self.append(
             control_panel,
             self.content);
+        make_draggable(self);
     }
     clear(){
         ContentManager.clear_content(this);
@@ -239,3 +240,31 @@ function selectionExist() {
     return !document.getSelection().isCollapsed;
 }
 
+function make_draggable(div) {
+    let drag = div.drag_block_button;
+    let draggable=div;
+    let startCursorX;
+    let startCursorY;
+    let startX;
+    let startY;
+    drag.addEventListener('mousedown', function (event) {
+        draggable.style.position = 'absolute';//CSS теперь элемент "Блуждающий" :)
+        event.preventDefault();
+        startCursorX = event.pageX;//Начальная позиция курсора по оси X
+        startCursorY = event.pageY;//Начальная позиция курсора по оси Y
+        startX = draggable.style.left.replace('px', '') * 1; // Нам нужны только цыфры без PX
+        startY = draggable.style.top.replace('px', '') * 1;
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mouseup',stop_move);
+    });
+
+    function move(event) {
+
+        draggable.style.left = startX + event.pageX - startCursorX + 'px'; //позиция элемента + позиция курсора - позиция курсоа в начале перетаскивания
+        draggable.style.top = startY + event.pageY - startCursorY + 'px'; // Так же как и в предыдущем случае, только по другой оси
+    }
+    function stop_move() {
+        window.removeEventListener('mousemove',move);
+    }
+
+}
