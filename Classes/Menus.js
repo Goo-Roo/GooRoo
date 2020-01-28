@@ -3,6 +3,7 @@ import {Button} from "./Buttons.js";
 import {execCommand} from "./functions.js";
 import {app} from "../scripts/main.js";
 import {remove_block} from "./functions.js";
+import {ContentManager} from "./ContentManager.js";
 
 
 export class Menu extends Goo {
@@ -144,19 +145,19 @@ export const FORMAT_MENU =
         .setID('format-menu')
         .add_item(
             UNDERLINE_ITEM, function () {
-                execCommand(app.range, 'underline')
+                execCommand(ContentManager.range, 'underline')
             })
         .add_item(
             ITALIC_ITEM, function () {
-                execCommand(app.range, 'italic')
+                execCommand(ContentManager.range, 'italic')
             })
         .add_item(
             STRIKE_ITEM, function () {
-                execCommand(app.range, 'strikethrough')
+                execCommand(ContentManager.range, 'strikethrough')
             })
         .add_item(
             BOLD_ITEM, function () {
-                execCommand(app.range, 'bold')
+                execCommand(ContentManager.range, 'bold')
             })
         .relative_position(-40, -40)
         .build();

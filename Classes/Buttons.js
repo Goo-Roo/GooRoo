@@ -21,7 +21,11 @@ export class Button extends Goo {
             name;
             pText;
             pIcon;
-            pSize;
+            /**@type {{width: string, height: string}}*/
+            pSize={
+                width:'',
+                height:''
+            };
 
             constructor(name) {
                 this.name = name;
@@ -35,6 +39,12 @@ export class Button extends Goo {
                 return this;
             }
 
+            /**
+             *
+             * @param{number}width
+             * @param{number}height
+             * @returns {Builder}
+             */
             size(width, height) {
                 this.pSize = {
                     width: width + 'px',
