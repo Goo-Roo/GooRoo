@@ -3,6 +3,7 @@ import {Button} from "./Buttons.js";
 import {app} from "../scripts/main.js";
 import {ContentManager} from "./ContentManager.js";
 import {BlockContent} from "./BlockContent.js";
+import {generateId} from "./functions.js";
 
 const CROSS_ICON =
     '../resources/cross.svg#cross';
@@ -35,11 +36,28 @@ export class Block extends Goo {
     add_block_button;
     /**@type{Button}*/
     drag_block_button;
+    /*/--модель блока для хранения в БД--/*/
+    #db_model = {
+        id: undefined,
+        order: undefined,
+        page: undefined,
+        content: undefined
+    };
 
-    constructor() {
+    constructor(id) {
+        console.log('creating new block...');
         super();
         /**@type{Block}*/
         const self = this;
+        /*/--если ID задан--/*/
+        if (id) {
+            /*/--присвоить блоку заданный ID--/*/
+            self.id = id;
+        } else {/*/--иначе--/*/
+            /*/--присвоить блоку новый ID--/*/
+            let random = generateId();
+            self.id = random[0] + '-' + random[1] + '-' + random[2];
+        }
         let control_panel = new Goo();
         self.#content = new BlockContent(self);
         self.add_block_button = new_add_block_button();
@@ -63,104 +81,150 @@ export class Block extends Goo {
                     .set_invoker(self)
                     .show(event);
             });
-        self.addEventListener('click',self.click);
-        self.addEventListener('keydown',self.keyDown);
-        self.addEventListener('mouseup',self.check_selection);
+        self.addEventListener('click', self.click);
+        self.addEventListener('keydown', self.keyDown);
+        self.addEventListener('mouseup', self.check_selection);
         /*/--блок перемещаемый--/*/
         self.draggable();
+        console.log('new block created!');
     }
-    draggable(){
+
+    connectedCallback() {
+        console.log('block connected!');
+        console.log(this.db_model)
+    }
+
+    update_db_model() {
+        console.log('updating block db_model...');
+        this.#db_model = {
+            id: this.id,
+            order: this.index,
+            page: this.parentElement.parentElement.id,
+            content: this.#content.innerHTML
+        };
+        console.log('block db model updated!');
+    }
+
+    get index() {
+        let i = 0;
+        let result;
+        for (let child of this.parentElement.children) {
+            child.id = String(i);
+            if (child === this) {
+                result = String(i);
+            }
+            i++;
+        }
+        return result;
+    }
+
+    get db_model() {
+        console.log('getting block db model...');
+        this.update_db_model();
+        return this.#db_model;
+    }
+
+    draggable() {
+        console.log('making block draggable...');
         /*/--позиция блока (относительно страницы) до начала перетаскивания--/*/
         let position_left;
         let position_top;
         /*/--стиль блока до начала пертаскивания--/*/
         let old_style;
         /*/--измененный формат ссылки на самого себя--/*/
-        let self=this;
+        let self = this;
         /*/--переменная для клона блока--/*/
         let clone;
         /*/--кнопка перетаскивания слушает событие когда ее нажмут--/*/
-        self.drag_block_button.addEventListener('mousedown',function (event) {
+        self.drag_block_button.addEventListener('mousedown', function (event) {
             /*/--сохранение ширины блока для клона--/*/
             let old_width = self.getBoundingClientRect().width;
             /*/--сохранение стиля блока--/*/
-            old_style=self.style;
+            old_style = self.style;
             /*/--получение относительных координат блока--/*/
-            position_left=self.getBoundingClientRect().left;
-            position_top=self.getBoundingClientRect().top;
+            position_left = self.getBoundingClientRect().left;
+            position_top = self.getBoundingClientRect().top;
             /*/--клонирование блока--/*/
             do_clone();
             /*/--добавление клона блока на место блока/*/
-            self.insertAdjacentElement('afterend',clone);
+            self.insertAdjacentElement('afterend', clone);
             /*/--извлечение блока из общего потока блоков в контейнере--/*/
-            self.style.position='absolute';
+            self.style.position = 'absolute';
             /*/--задание ширины перемещаемого блока как в контейнере--/*/
-            self.style.width=old_width+'px';
+            self.style.width = old_width + 'px';
             /*/--перемещаемый блок прозрачаен для событий курсора--/*/
-            self.style.pointerEvents='none';
+            self.style.pointerEvents = 'none';
             /*/--установка начальной позиции перемещаемого блока--/*/
-            set_position(position_left,position_top);
+            set_position(position_left, position_top);
             /*/--все блоки кроме перемещаемого становятся целью для
             его приема--/*/
             active_targets(true);
             /*/--окно слушает координаты курсора и окончание перемещения--/*/
-            window.addEventListener('mousemove',move);
-            window.addEventListener('mouseup',stop);
+            window.addEventListener('mousemove', move);
+            window.addEventListener('mouseup', stop);
+
             /*/--функция перемещения блока--/*/
             function move(event) {
                 /*/--вычисление координат блока по оси Х--/*/
-                position_left=position_left+event.movementX;
+                position_left = position_left + event.movementX;
                 /*/--вычисление координат блока по оси Y--/*/
-                position_top=position_top+event.movementY;
+                position_top = position_top + event.movementY;
                 /*/--установка позиции блока по вычисленным значениям--/*/
-                set_position(position_left,position_top);
+                set_position(position_left, position_top);
             }
+
             /*/--функция завершения перемещения блока--/*/
             function stop(event) {
                 /*/--проверка принадлежности цели к требуемой--/*/
-                if (event.target.tagName==='GOO-BLOCK'){
+                if (event.target.tagName === 'GOO-BLOCK') {
                     /*/--вставка перемещаемого блока после цели--/*/
-                    event.target.insertAdjacentElement('afterend',self);
+                    event.target.insertAdjacentElement('afterend', self);
                 }
                 /*/--удаление клона--/*/
                 clone.remove();
                 /*/--применение перемещенному блоку сохраненного стиля--/*/
-                self.style=old_style;
+                self.style = old_style;
                 /*/--выключение режима приема объекта--/*/
                 active_targets(false);
                 /*/--удаление слушателей у окна--/*/
-                window.removeEventListener('mousemove',move);
-                window.removeEventListener('mouseup',stop);
+                window.removeEventListener('mousemove', move);
+                window.removeEventListener('mouseup', stop);
             }
+
             /*/--функция установка позиции блока--/*/
-            function set_position(x,y){
-                self.style.left=x+'px';
-                self.style.top=y+'px';
+            function set_position(x, y) {
+                self.style.left = x + 'px';
+                self.style.top = y + 'px';
             }
+
             /*/--создание сопии блока--/*/
-            function do_clone(){
-                let range=document.createRange();
+            function do_clone() {
+                let range = document.createRange();
                 /*/--выбрать внутренний контент блока--/*/
                 range.selectNodeContents(self.content);
                 /*/--создание аналогичного блока с копией контента--/*/
-                clone=new Block().set_content(range.cloneContents());
-                clone.style.backgroundColor='rgba(100,100,200,0.3)';
+                clone = new Block().set_content(range.cloneContents());
+                clone.style.backgroundColor = 'rgba(100,100,200,0.3)';
             }
+
             /*/--функция переключения режима приема блока--/*/
             function active_targets(state) {
                 /*/--для каждого блока на странице--/*/
                 for (let child of self.parentElement.children) {
                     /*/кроме текущего блока/*/
-                    if (child!==self){
+                    if (child !== self) {
                         /*/--выключить активность поля редактирования контента--/*/
-                        child.content.active=!state;
+                        child.content.active = !state;
                     }
                 }
             }
-        })
+        });
+        console.log('block draggable now!');
     }
+
     /*/--функция добавления нового блока--/*/
     get add_new_block() {
+        console.log('adding new block...');
         /*/--создать новый блок--/*/
         let new_block = new Block();
         /*/--вставить новый блок после текущего--/*/
@@ -169,15 +233,20 @@ export class Block extends Goo {
         new_block.focus();
         return new_block;
     }
+
     /*/--функция добавления контента в блок--/*/
-    set_content(content){
+    set_content(content) {
+        console.log('set content for block...');
         this.#content.append(content);
+        console.log('content for block added!');
         return this;
     }
+
     /*/--предотвращение реакции других элементов на событие--/*/
     click(event) {
-            event.stopPropagation();
+        event.stopPropagation();
     }
+
     /*/--осистить контент блока--/*/
     clear() {
         ContentManager.clear_content(this);
@@ -187,9 +256,10 @@ export class Block extends Goo {
     get content() {
         return this.#content;
     }
+
     /*//*/
-    set content(content){
-        this.#content=content;
+    set content(content) {
+        this.#content = content;
     }
 
     /**@return {Block|Element}*//*/--предыдущий блок--/*/

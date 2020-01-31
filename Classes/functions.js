@@ -16,3 +16,10 @@ export function remove_block(block) {
         block.clear();
     }
 }
+
+export function generateId(n=3) {
+    /**@type{Uint32Array}*/
+    let arr = new Uint32Array(n);
+    window.crypto.getRandomValues(arr);
+    return arr;
+}
